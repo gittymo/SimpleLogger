@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using System.IO;
+using System.Linq;
+using System;
 
 namespace SimpleLogger
 {
@@ -13,10 +15,10 @@ namespace SimpleLogger
                 Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
             }
 
-            LogFilePath = logFilePath;
-            RetentionPeriod = TimeSpan.MinValue;
-            MaximumLogFileSizeInBytes = -1;
-            MaximumRollFilesToKeep = 0;
+            _logFilePath = logFilePath;
+            _retentionPeriod = TimeSpan.MinValue;
+            _maximumLogFileSizeInBytes = -1;
+            _maximumRollFilesToKeep = 0;
         }
 
         public Logger(string logFilePath, string retentionPeriodString, int maximumRollFilesToKeep = 0)
@@ -26,10 +28,10 @@ namespace SimpleLogger
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
             }
-            LogFilePath = logFilePath;
-            RetentionPeriod = TimeSpan.Parse(retentionPeriodString);
-            MaximumLogFileSizeInBytes = -1;
-            MaximumRollFilesToKeep = maximumRollFilesToKeep;
+            _logFilePath = logFilePath;
+            _retentionPeriod = TimeSpan.Parse(retentionPeriodString);
+            _maximumLogFileSizeInBytes = -1;
+            _maximumRollFilesToKeep = maximumRollFilesToKeep;
         }
 
         public Logger(string logFilePath, int maximumLogFileSizeInBytes, int maximumRollFilesToKeep = 0)
@@ -39,10 +41,10 @@ namespace SimpleLogger
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
             }
-            LogFilePath = logFilePath;
-            RetentionPeriod = TimeSpan.MinValue;
-            MaximumLogFileSizeInBytes = maximumLogFileSizeInBytes;
-            MaximumRollFilesToKeep = maximumRollFilesToKeep;
+            _logFilePath = logFilePath;
+            _retentionPeriod = TimeSpan.MinValue;
+            _maximumLogFileSizeInBytes = maximumLogFileSizeInBytes;
+            _maximumRollFilesToKeep = maximumRollFilesToKeep;
         }
 
         // Write a formatted log message to the log filepath, replacing {0}, {1}, etc. with the provided arguments
@@ -58,7 +60,7 @@ namespace SimpleLogger
                     {
                         DateTime lastWriteTime = File.GetLastWriteTime(LogFilePath);
                         TimeSpan logFileAge = DateTime.Now - lastWriteTime;
-                        FileInfo logFileInfo = new(LogFilePath);
+                        FileInfo logFileInfo = new FileInfo(LogFilePath);
 
                         if ((RetentionPeriod > TimeSpan.MinValue && logFileAge > RetentionPeriod) || (MaximumLogFileSizeInBytes > 0 && logFileInfo.Length > MaximumLogFileSizeInBytes))
                         {
@@ -70,7 +72,9 @@ namespace SimpleLogger
                                 File.Move(LogFilePath, rollFilePath);
 
                                 // Get a list of all rolled log files with the same name as the current log file, sorted by last write time.
-                                string[] rolledLogFiles = [.. Directory.GetFiles(Path.GetDirectoryName(LogFilePath), Path.GetFileNameWithoutExtension(LogFilePath) + "_*").OrderByDescending(f => File.GetLastWriteTime(f))];
+                                string[] rolledLogFiles = Directory.GetFiles(Path.GetDirectoryName(LogFilePath), Path.GetFileNameWithoutExtension(LogFilePath) + "_*")
+                                    .OrderByDescending(f => File.GetLastWriteTime(f))
+                                    .ToArray();
                                 // Delete any rolled file whose index is greater than MaximumRollFilesToKeep
                                 for (int i = MaximumRollFilesToKeep; i < rolledLogFiles.Length; i++)
                                 {
@@ -80,7 +84,7 @@ namespace SimpleLogger
                         }
                     }
 
-                    StringBuilder sb = new(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+                    StringBuilder sb = new StringBuilder(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
                     sb.Append(" - ");
                     sb.Append(level);
                     sb.Append(": ");
@@ -115,11 +119,16 @@ namespace SimpleLogger
             Log("DEBUG", message, args);
         }
 
-        public string LogFilePath { get; init; }
-        public TimeSpan RetentionPeriod { get; init; }
-        public int MaximumLogFileSizeInBytes { get; init; }
-        public int MaximumRollFilesToKeep { get; init; }
+        public string LogFilePath => _logFilePath;
+        public TimeSpan RetentionPeriod => _retentionPeriod;
+        public int MaximumLogFileSizeInBytes => _maximumLogFileSizeInBytes;
+        public int MaximumRollFilesToKeep => _maximumRollFilesToKeep;
 
-        private readonly object _lockObject = new();
+        private readonly string _logFilePath;
+        private readonly TimeSpan _retentionPeriod;
+        private readonly int _maximumLogFileSizeInBytes;
+        private readonly int _maximumRollFilesToKeep;
+
+        private readonly object _lockObject = new object();
     }
 }

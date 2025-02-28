@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLogger", "SimpleLogge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSimpleLogger", "TestSimpleLogger\TestSimpleLogger.csproj", "{73F06C1E-583C-48D8-8A4F-722198262415}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLoggerFramework", "SimpleLoggerFramework\SimpleLoggerFramework.csproj", "{6789BF37-5F95-4FC6-9E8F-12E987C2E821}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{73F06C1E-583C-48D8-8A4F-722198262415}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73F06C1E-583C-48D8-8A4F-722198262415}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73F06C1E-583C-48D8-8A4F-722198262415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6789BF37-5F95-4FC6-9E8F-12E987C2E821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6789BF37-5F95-4FC6-9E8F-12E987C2E821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6789BF37-5F95-4FC6-9E8F-12E987C2E821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6789BF37-5F95-4FC6-9E8F-12E987C2E821}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
