@@ -4,12 +4,12 @@ namespace SimpleLogger
 {
     public sealed class Logger
     {
-        public Logger(string logFilePath, int maximumRollFilesToKeep = 0)
+        public Logger(string logFilePath)
         {
             LogFilePath = logFilePath;
             RetentionPeriod = TimeSpan.MinValue;
             MaximumLogFileSizeInBytes = -1;
-            MaximumRollFilesToKeep = maximumRollFilesToKeep;
+            MaximumRollFilesToKeep = 0;
         }
 
         public Logger(string logFilePath, string retentionPeriodString, int maximumRollFilesToKeep = 0)
