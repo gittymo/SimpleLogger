@@ -80,7 +80,7 @@ namespace SimpleLogger
                         }
                     }
 
-                    StringBuilder sb = new(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+                    StringBuilder sb = new(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
                     sb.Append(" - ");
                     sb.Append(level);
                     sb.Append(": ");
